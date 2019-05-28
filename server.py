@@ -23,7 +23,12 @@ pos = ["0:50,50", "1:100,100"]
 def threaded_client(conn):
     global currentId, pos
     conn.send(str.encode(currentId))
-    currentId = "1"
+
+    if currentId == "0":
+        currentId = "1"
+    else:
+        currentId = "0"
+
     reply = ''
     while True:
         try:

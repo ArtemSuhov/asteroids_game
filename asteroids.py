@@ -136,7 +136,7 @@ class MyGame(object):
     def parse_data(data):
         try:
             d = data.split(":")[1].split(",")
-            return int(d[0]), int(d[1])
+            return float(d[0]), float(d[1])
         except:
             return 0,0
 
@@ -175,6 +175,7 @@ class MyGame(object):
 
             # Отсылаем свои координаты, ловим второго игрока
             self.friendship.position[0], self.friendship.position[1] = self.parse_data(self.send_data())
+            print(self.send_data())
 
             if self.spaceship.position[0] > 1280 or self.spaceship.position[0] < 0 \
                     or self.spaceship.position[1] > 720 or self.spaceship.position[1] < 0:
