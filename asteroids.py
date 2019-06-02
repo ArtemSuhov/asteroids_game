@@ -28,8 +28,10 @@ class MyGame(object):
         self.normal_font = pygame.font.SysFont(None, 50)
         self.small_font = pygame.font.SysFont(None, 25)
         self.laserburst_sound = load_sound('laser.wav')
-        self.gameover_text = self.big_font.render('Конец игры', True, (255, 255, 255))
-        self.gameover_text2 = self.normal_font.render('Жмякни для новой игры', True, (255, 255, 255))
+        self.gameover_text = self.big_font.render('Конец игры', True,
+                                                  (255, 255, 255))
+        self.gameover_text2 = self.normal_font.render('Жмякни для новой игры',
+                                                      True, (255, 255, 255))
         self.lives_image = load_image('life.png')
         self.critical_distance = {"big": 100, "normal": 70, "small": 40}
         # Игровой таймер
@@ -39,8 +41,10 @@ class MyGame(object):
         # Инициализруем вступительный экран
         self.state = MyGame.WELCOME
         self.welcome_logo = load_image('logo.png')
-        self.welcome_text = self.big_font.render("Star Wars on steroids", True, (255, 255, 255))
-        self.welcome_desc = self.normal_font.render("Жмякни по экрану", True, (255, 255, 255))
+        self.welcome_text = self.big_font.render("Star Wars on steroids", True,
+                                                 (255, 255, 255))
+        self.welcome_desc = self.normal_font.render("Жмякни по экрану", True,
+                                                    (255, 255, 255))
 
     def start(self):
         self.spaceship = Spaceship((self.width // 2, self.height // 2))
@@ -64,7 +68,8 @@ class MyGame(object):
 
                     if keys[pygame.K_SPACE]:
                         new_time = datetime.datetime.now()
-                        if new_time - self.fire_time > datetime.timedelta(seconds=0.5):
+                        if new_time - self.fire_time > datetime.timedelta(
+                                seconds=0.5):
                             self.spaceship.fire()
                             self.laserburst_sound.play()
                             self.fire_time = new_time
@@ -112,8 +117,9 @@ class MyGame(object):
                 pygame.time.set_timer(MyGame.RESTART, 0)
                 self.state = MyGame.STARTING
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and (self.state == MyGame.STARTING
-                                                           or self.state == MyGame.WELCOME):
+            elif event.type == pygame.MOUSEBUTTONDOWN and (
+                    self.state == MyGame.STARTING
+                    or self.state == MyGame.WELCOME):
                 self.hedgehoppers = []
                 self.start()
                 for i in range(5):
@@ -128,7 +134,8 @@ class MyGame(object):
         Send position to server
         :return: None
         """
-        data = str(self.net.id) + ":" + str(self.spaceship.position[0]) + "," + str(self.spaceship.position[1])
+        data = str(self.net.id) + ":" + str(
+            self.spaceship.position[0]) + "," + str(self.spaceship.position[1])
         reply = self.net.send(data)
         return reply
 
@@ -137,13 +144,13 @@ class MyGame(object):
         try:
             d = data.split(":")[1].split(",")
             return float(d[0]), float(d[1])
-        except:
-            return 0,0
+        except("Exception on parsing data"):
+            return 0, 0
 
     def make_hedgehopper(self, size="big", pos=None):
         """Создаем штурмовика размера size, по умолчанию большой"""
         margin = 200
-        if pos == None:
+        if pos is None:
             rand_x = random.randint(margin, self.width - margin)
             rand_y = random.randint(margin, self.height - margin)
             while distance((rand_x, rand_y), self.spaceship.position) < 400:
@@ -174,11 +181,14 @@ class MyGame(object):
             self.spaceship.move()
 
             # Отсылаем свои координаты, ловим второго игрока
-            self.friendship.position[0], self.friendship.position[1] = self.parse_data(self.send_data())
+            self.friendship.position[0], self.friendship.position[
+                1] = self.parse_data(self.send_data())
             print(self.send_data())
 
-            if self.spaceship.position[0] > 1280 or self.spaceship.position[0] < 0 \
-                    or self.spaceship.position[1] > 720 or self.spaceship.position[1] < 0:
+            if self.spaceship.position[0] > 1280 or self.spaceship.position[
+                0] < 0 \
+                    or self.spaceship.position[1] > 720 or \
+                    self.spaceship.position[1] < 0:
                 self.die()
 
     def bursts_physics(self):
@@ -192,16 +202,24 @@ class MyGame(object):
                             self.hedgehoppers.remove(hedgehopper)
                             if burst in self.spaceship.active_bursts:
                                 self.spaceship.active_bursts.remove(burst)
-                            self.make_hedgehopper("normal", (hedgehopper.position[0] + 10, hedgehopper.position[1]))
-                            self.make_hedgehopper("normal", (hedgehopper.position[0] - 10, hedgehopper.position[1]))
+                            self.make_hedgehopper("normal", (
+                                hedgehopper.position[0] + 10,
+                                hedgehopper.position[1]))
+                            self.make_hedgehopper("normal", (
+                                hedgehopper.position[0] - 10,
+                                hedgehopper.position[1]))
                             self.score += 1
                     elif hedgehopper.size == "normal":
                         if distance(burst.position, hedgehopper.position) < 50:
                             self.hedgehoppers.remove(hedgehopper)
                             if burst in self.spaceship.active_bursts:
                                 self.spaceship.active_bursts.remove(burst)
-                            self.make_hedgehopper("small", (hedgehopper.position[0] + 10, hedgehopper.position[1]))
-                            self.make_hedgehopper("small", (hedgehopper.position[0] - 10, hedgehopper.position[1]))
+                            self.make_hedgehopper("small", (
+                                hedgehopper.position[0] + 10,
+                                hedgehopper.position[1]))
+                            self.make_hedgehopper("small", (
+                                hedgehopper.position[0] - 10,
+                                hedgehopper.position[1]))
                             self.score += 1
                     else:
                         if distance(burst.position, hedgehopper.position) < 30:
@@ -218,9 +236,11 @@ class MyGame(object):
             for hedgehopper in self.hedgehoppers:
                 hedgehopper.move()
 
-                if distance(hedgehopper.position, self.spaceship.position) < self.critical_distance[hedgehopper.size]:
+                if distance(hedgehopper.position, self.spaceship.position) < \
+                        self.critical_distance[hedgehopper.size]:
                     self.die()
-                elif distance(hedgehopper.position, (self.width / 2, self.height / 2)) > math.sqrt(
+                elif distance(hedgehopper.position,
+                              (self.width / 2, self.height / 2)) > math.sqrt(
                         (self.width / 2) ** 2 + (self.height / 2) ** 2):
                     self.hedgehoppers.remove(hedgehopper)
 
@@ -246,14 +266,18 @@ class MyGame(object):
             if len(self.hedgehoppers) < 10:
                 self.make_hedgehopper()
 
-            scores_text = self.small_font.render("Убито штурмовиков: " + str(self.score), True, (255, 255, 255))
+            scores_text = self.small_font.render(
+                "Убито штурмовиков: " + str(self.score), True, (255, 255, 255))
             draw(scores_text, self.screen, (120, 100))
 
             if self.state == MyGame.GAME_OVER or self.state == MyGame.STARTING:
-                draw(self.gameover_text, self.screen, (self.width // 2, self.height // 2))
-                draw(self.gameover_text2, self.screen, (self.width // 2, self.height // 2 + 100))
+                draw(self.gameover_text, self.screen,
+                     (self.width // 2, self.height // 2))
+                draw(self.gameover_text2, self.screen,
+                     (self.width // 2, self.height // 2 + 100))
             for i in range(self.lives):
-                draw(self.lives_image, self.screen, (self.lives_image.get_width() * i + 60, 50))
+                draw(self.lives_image, self.screen,
+                     (self.lives_image.get_width() * i + 60, 50))
         else:
             draw(self.welcome_logo, self.screen, (self.width // 2, 400))
             draw(self.welcome_text, self.screen, (self.width // 2, 50))

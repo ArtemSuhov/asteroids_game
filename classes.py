@@ -36,7 +36,8 @@ class Background(pygame.sprite.Sprite):
 
 class Spaceship(GameObject):
     def __init__(self, position):
-        super(Spaceship, self).__init__(position, load_image('spaceship-2.png'))
+        super(Spaceship, self).__init__(position,
+                                        load_image('spaceship-2.png'))
         self.image_on = load_image('spaceship-1.png')
         self.direction = [0, -1]
         self.is_throttle_on = False
@@ -45,21 +46,31 @@ class Spaceship(GameObject):
 
     def draw_on(self, screen):
         if self.is_throttle_on:
-            new_image, rect = rotate(self.image_on, self.image_on.get_rect(), self.angle)
+            new_image, rect = rotate(self.image_on, self.image_on.get_rect(),
+                                     self.angle)
         else:
-            new_image, rect = rotate(self.image, self.image.get_rect(), self.angle)
+            new_image, rect = rotate(self.image, self.image.get_rect(),
+                                     self.angle)
 
         draw(new_image, screen, self.position)
 
     def fire(self):
         fireSpawns = [0, 0, 0, 0]
-        fireSpawns[0] = math.sin(-math.radians(self.angle) - 1.2) * (self.image.get_width() // 2)
-        fireSpawns[1] = -math.cos(math.radians(self.angle) + 1.2) * (self.image.get_height() // 2)
-        fireSpawns[2] = -math.sin(-math.radians(self.angle) - 1.94) * (self.image.get_width() // 2)
-        fireSpawns[3] = math.cos(math.radians(self.angle) + 1.94) * (self.image.get_height() // 2)
+        fireSpawns[0] = math.sin(-math.radians(self.angle) - 1.2) * (
+                    self.image.get_width() // 2)
+        fireSpawns[1] = -math.cos(math.radians(self.angle) + 1.2) * (
+                    self.image.get_height() // 2)
+        fireSpawns[2] = -math.sin(-math.radians(self.angle) - 1.94) * (
+                    self.image.get_width() // 2)
+        fireSpawns[3] = math.cos(math.radians(self.angle) + 1.94) * (
+                    self.image.get_height() // 2)
 
-        new_laserburst = Laserburst((self.position[0] + fireSpawns[0], self.position[1] + fireSpawns[1]), self.angle)
-        new_laserburst2 = Laserburst((self.position[0] + fireSpawns[2], self.position[1] + fireSpawns[3]), self.angle)
+        new_laserburst = Laserburst((self.position[0] + fireSpawns[0],
+                                     self.position[1] + fireSpawns[1]),
+                                    self.angle)
+        new_laserburst2 = Laserburst((self.position[0] + fireSpawns[2],
+                                      self.position[1] + fireSpawns[3]),
+                                     self.angle)
         self.active_bursts.append(new_laserburst)
         self.active_bursts.append(new_laserburst2)
 
@@ -75,7 +86,8 @@ class Hedgehopper(GameObject):
     def __init__(self, position, size, speed=4):
         if size in {"big", "normal", "small"}:
             str_filename = "hedgehopper_" + str(size) + ".png"
-            super(Hedgehopper, self).__init__(position, load_image(str_filename))
+            super(Hedgehopper, self).__init__(position,
+                                              load_image(str_filename))
             self.size = size
         else:
             return None
